@@ -22,12 +22,14 @@ public class UserService {
     public UserResponse getUserById(String id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        log.info("User found: {}", user);
         return mapUserToUserResponse(user);
     }
 
     // GET ALL
     public List<UserResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
+        log.info("Found {} users", users.size());
         return users.stream()
                 .map(this::mapUserToUserResponse)
                 .collect(Collectors.toList());
