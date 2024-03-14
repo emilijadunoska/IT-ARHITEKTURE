@@ -8,15 +8,19 @@ import ita.membershipservice.repository.MembershipRepository;
 import jakarta.inject.Inject;
 import ita.membershipservice.Membership;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @GrpcService
 public class MembershipService extends MembershipServiceGrpc.MembershipServiceImplBase {
 
+    private static final Logger logger = LoggerFactory.getLogger(MembershipService.class);
     @Inject
     MembershipRepository membershipRepository;
 
     @Override
     public void createMembership(Membership.CreateMembershipRequest request, StreamObserver<Membership.MembershipResponse> responseObserver) {
+        logger.info("Received createMembership request: {}", request);
         ita.membershipservice.model.Membership membership = new ita.membershipservice.model.Membership(
                 request.getUserId(),
                 request.getType(),
@@ -38,11 +42,14 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
                 .build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+        logger.info("Sending createMembership response: {}", response);
     }
 
 
     @Override
     public void getMembership(Membership.GetMembershipRequest request, StreamObserver<Membership.MembershipResponse> responseObserver) {
+        logger.info("Received getMembership request for ID: {}", request.getId());
+
         String membershipId = request.getId();
         ObjectId objectId = new ObjectId(membershipId);
 
@@ -59,8 +66,10 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
                     .build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
+            logger.info("Sending getMembership response: {}", response);
         } else {
             System.out.println("Membership with ID " + membershipId + " not found");
+            logger.warn("Membership with ID {} not found", membershipId);
             responseObserver.onError(Status.NOT_FOUND.asRuntimeException());
         }
     }
@@ -68,15 +77,16 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
 
     @Override
     public void deleteMembership(Membership.DeleteMembershipRequest request, StreamObserver<Membership.DeleteMembershipResponse> responseObserver) {
+        logger.info("Received deleteMembership request for ID: {}", request.getId());
         String membershipId = request.getId();
         ObjectId objectId = new ObjectId(membershipId);
 
         boolean success = membershipRepository.deleteById(objectId);
 
         if (success) {
-            System.out.println("Membership deleted successfully");
+            logger.info("Membership deleted successfully");
         } else {
-            System.out.println("Failed to delete membership");
+            logger.warn("Failed to delete membership");
         }
 
         Membership.DeleteMembershipResponse response = Membership.DeleteMembershipResponse.newBuilder()
@@ -89,6 +99,7 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
 
     @Override
     public void updateMembership(Membership.UpdateMembershipRequest request, StreamObserver<Membership.MembershipResponse> responseObserver) {
+        logger.info("Received updateMembership request for ID: {}", request.getId());
         String membershipId = request.getId();
         ObjectId objectId = new ObjectId(membershipId);
 
@@ -125,7 +136,9 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
+            logger.info("Sending updateMembership response: {}", response);
         } else {
+            logger.warn("Membership with ID {} not found", membershipId);
             System.out.println("Membership with ID " + membershipId + " not found");
             responseObserver.onError(Status.NOT_FOUND.asRuntimeException());
         }

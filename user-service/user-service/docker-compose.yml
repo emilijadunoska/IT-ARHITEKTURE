@@ -10,6 +10,15 @@ services:
     environment:
       SPRING_DATA_MONGODB_URI: ${MONGO_DB_URI}
       SPRING_DATA_MONGODB_DATABASE: ${MONGO_DB_DATABASE}
+#  membership-service:
+#    image: emilijadn/ita-membership-service-jvm:1.0.0
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - mongo_db
+#    environment:
+#      SPRING_DATA_MONGODB_URI: ${MONGO_DB_URI_MS}
+#      SPRING_DATA_MONGODB_DATABASE: ${MONGO_DB_DATABASE_MS}
 
   mongo_db:
     image: mongo:7.0.6
