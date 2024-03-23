@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      QUARKUS_ARTEMIS_URL: ${{ secrets.QUARKUS_ARTEMIS_URL }}
       MONGO_DB_URI_GCS: ${{ secrets.MONGO_DB_URI_GCS }}
       MONGO_DB_DATABASE_GCS: ${{ secrets.MONGO_DB_DATABASE_GCS }}
 
