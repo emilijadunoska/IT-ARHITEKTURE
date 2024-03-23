@@ -4,4 +4,5 @@ A microservices-based application built with Spring Boot.
 
 ## Services
 1. User Management Service
+2. Memberships management service
    
