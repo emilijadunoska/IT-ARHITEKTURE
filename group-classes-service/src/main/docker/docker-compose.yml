@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  group-classes-service:
+    image: emilijadn/ita-group-classes-service-jvm:1.0.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo_db
+      - artemis
+    environment:
+      MONGO_DB_URI_GCS: ${MONGO_DB_URI_GCS}
+      MONGO_DB_DATABASE_GCS: ${MONGO_DB_DATABASE_GCS}
+      QUARKUS_ARTEMIS_URL: tcp://artemis:61616
+
+  mongo_db:
+    image: mongo:7.0.6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  artemis:
+    image: vromero/activemq-artemis:latest
+    ports:
+      - "8161:8161"  # Web Console
+      - "61616:61616" # AMQP Port
+      - "5445:5445"   # Core Port
+
+volumes:
+  mongo-data:
