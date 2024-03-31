@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package ita.membershipservice;
+
+service MembershipService {
+  rpc createMembership (CreateMembershipRequest) returns (MembershipResponse) {}
+
+  rpc getMembership (GetMembershipRequest) returns (MembershipResponse) {}
+
+  rpc deleteMembership (DeleteMembershipRequest) returns (DeleteMembershipResponse) {}
+
+  rpc updateMembership (UpdateMembershipRequest) returns (MembershipResponse) {}
+
+}
+
+message CreateMembershipRequest {
+  string userId = 1;
+  string type = 2;
+  int32 price = 3;
+  string startDate = 4;
+  string endDate = 5;
+}
+
+message GetMembershipRequest {
+  string id = 1;
+}
+
+message MembershipResponse {
+  string id = 1;
+  string userId = 2;
+  string type = 3;
+  int32 price = 4;
+  string startDate = 5;
+  string endDate = 6;
+}
+
+message DeleteMembershipRequest {
+  string id = 1;
+}
+
+message DeleteMembershipResponse {
+  bool success = 1;
+}
+
+message UpdateMembershipRequest {
+  string id = 1;
+  optional string userId = 2;
+  optional string type = 3;
+  optional int32 price = 4;
+  optional string startDate = 5;
+  optional string endDate = 6;
+}
+

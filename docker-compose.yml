@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  user-service:
+    image: emilijadn/ita-user-service:1.0.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo_db
+    environment:
+      SPRING_DATA_MONGODB_URI: ${MONGO_DB_URI}
+      SPRING_DATA_MONGODB_DATABASE: ${MONGO_DB_DATABASE}
+
+  membership-service:
+    image: emilijadn/ita-membership-service-jvm:1.0.0
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mongo_db
+    environment:
+      MONGO_DB_URI_MS: ${MONGO_DB_URI_MS}
+      MONGO_DB_DATABASE_MS: ${MONGO_DB_DATABASE_MS}
+
+  group-classes-service:
+    image: emilijadn/ita-group-classes-service-jvm:1.0.0
+    ports:
+      - "8081:8080" # Changed port to avoid conflict with user-service
+    depends_on:
+      - mongo_db
+      - artemis
+    environment:
+      MONGO_DB_URI_GCS: ${MONGO_DB_URI_GCS}
+      MONGO_DB_DATABASE_GCS: ${MONGO_DB_DATABASE_GCS}
+      QUARKUS_ARTEMIS_URL: tcp://artemis:61616
+
+  mongo_db:
+    image: mongo:7.0.6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  artemis:
+    image: vromero/activemq-artemis:latest
+    ports:
+      - "8161:8161"  # Web Console
+      - "61616:61616" # AMQP Port
+      - "5445:5445"   # Core Port
+
+volumes:
+  mongo-data:
