@@ -16,7 +16,7 @@ const {
 } = require("./generated/proto/membership_pb");
 
 const client = new MembershipServiceClient(
-  "localhost:9000",
+  "membership-service:9000",
   grpc.credentials.createInsecure()
 );
 
@@ -99,7 +99,7 @@ app.delete("/delete", (req, res) => {
 });
 
 const usersProxy = createProxyMiddleware({
-  target: "http://localhost:8080",
+  target: "http://user-service:8080",
   changeOrigin: true,
   pathRewrite: {
     "^/api/user": "/api/user",
@@ -107,7 +107,7 @@ const usersProxy = createProxyMiddleware({
 });
 
 const groupClassesProxy = createProxyMiddleware({
-  target: "http://localhost:8081",
+  target: "http://group-classes-service:8080",
   changeOrigin: true,
   pathRewrite: {
     "^/groupclass": "/groupclass",

@@ -9,38 +9,14 @@ const {
   MembershipServiceClient,
 } = require("./generated/proto/membership_grpc_pb");
 const {
-  CreateMembershipRequest,
   GetMembershipRequest,
-  UpdateMembershipRequest,
   DeleteMembershipRequest,
 } = require("./generated/proto/membership_pb");
 
 const client = new MembershipServiceClient(
-  "localhost:9000",
+  "membership-service:9000",
   grpc.credentials.createInsecure()
 );
-
-app.post("/create", (req, res) => {
-  const { userid, type, price, startDate, endDate } = req.body;
-
-  const request = new CreateMembershipRequest();
-
-  request.setUserid(userid);
-  request.setType(type);
-  request.setPrice(price);
-  request.setStartdate(startDate);
-  request.setEnddate(endDate);
-
-  client.createMembership(request, (error, response) => {
-    if (error) {
-      console.error("Error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    } else {
-      console.log("Response:", response);
-      res.json(response);
-    }
-  });
-});
 
 app.get("/getMembership", (req, res) => {
   const { id } = req.query;
@@ -54,28 +30,6 @@ app.get("/getMembership", (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     } else {
       console.log("Received response:", response);
-      res.json(response);
-    }
-  });
-});
-
-app.put("/updateMembership", (req, res) => {
-  const { id, userid, type, price, startDate, endDate } = req.body;
-
-  const request = new UpdateMembershipRequest();
-  request.setId(id);
-  if (userid) request.setUserId(userid);
-  if (type) request.setType(type);
-  if (price) request.setPrice(price);
-  if (startDate) request.setStartdate(startDate);
-  if (endDate) request.setEnddate(endDate);
-
-  client.updateMembership(request, (error, response) => {
-    if (error) {
-      console.error("Error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    } else {
-      console.log("Response:", response);
       res.json(response);
     }
   });
@@ -99,18 +53,38 @@ app.delete("/delete", (req, res) => {
 });
 
 const usersProxy = createProxyMiddleware({
-  target: "http://localhost:8080",
+  target: "http://user-service:8080",
   changeOrigin: true,
   pathRewrite: {
     "^/api/user": "/api/user",
   },
+  onProxyReq: (proxyReq, req, res) => {
+    if (req.method === "GET" || req.method === "DELETE") {
+      proxyReq.setHeader("Content-Type", "application/json");
+    } else {
+      res
+        .status(405)
+        .json({ error: "Sorry, this action is not possible on mobile. " });
+      res.end();
+    }
+  },
 });
 
 const groupClassesProxy = createProxyMiddleware({
-  target: "http://localhost:8081",
+  target: "http://group-classes-service:8080",
   changeOrigin: true,
   pathRewrite: {
     "^/groupclass": "/groupclass",
+  },
+  onProxyReq: (proxyReq, req, res) => {
+    if (req.method === "GET" || req.method === "DELETE") {
+      proxyReq.setHeader("Content-Type", "application/json");
+    } else {
+      res
+        .status(405)
+        .json({ error: "Sorry, this action is not possible on mobile. " });
+      res.end();
+    }
   },
 });
 

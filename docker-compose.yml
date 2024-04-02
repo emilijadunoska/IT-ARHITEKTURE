@@ -10,6 +10,8 @@ services:
     environment:
       SPRING_DATA_MONGODB_URI: ${MONGO_DB_URI}
       SPRING_DATA_MONGODB_DATABASE: ${MONGO_DB_DATABASE}
+    networks:
+      - my-network
 
   membership-service:
     image: emilijadn/ita-membership-service-jvm:1.0.0
@@ -20,6 +22,8 @@ services:
     environment:
       MONGO_DB_URI_MS: ${MONGO_DB_URI_MS}
       MONGO_DB_DATABASE_MS: ${MONGO_DB_DATABASE_MS}
+    networks:
+      - my-network
 
   group-classes-service:
     image: emilijadn/ita-group-classes-service-jvm:1.0.0
@@ -32,6 +36,8 @@ services:
       MONGO_DB_URI_GCS: ${MONGO_DB_URI_GCS}
       MONGO_DB_DATABASE_GCS: ${MONGO_DB_DATABASE_GCS}
       QUARKUS_ARTEMIS_URL: tcp://artemis:61616
+    networks:
+      - my-network
 
   mongo_db:
     image: mongo:7.0.6
@@ -39,6 +45,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    networks:
+      - my-network
 
   artemis:
     image: vromero/activemq-artemis:latest
@@ -46,6 +54,34 @@ services:
       - "8161:8161"  # Web Console
       - "61616:61616" # AMQP Port
       - "5445:5445"   # Core Port
+    networks:
+      - my-network
+  
+  mobile-gateway:
+    image: emilijadn/ita-mobile-gateway:1.0.0
+    ports:
+      - "4000:4000"
+    depends_on:
+      - user-service
+      - group-classes-service
+      - membership-service
+    networks:
+      - my-network
+  
+  web-gateway:
+    image: emilijadn/ita-web-gateway:1.0.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - group-classes-service
+      - membership-service
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
 
 volumes:
   mongo-data:
