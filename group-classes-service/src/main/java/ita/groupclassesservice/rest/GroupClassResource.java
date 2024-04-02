@@ -1,5 +1,6 @@
 package ita.groupclassesservice.rest;
 import io.smallrye.mutiny.Uni;
+import ita.groupclassesservice.model.GroupClass;
 import ita.groupclassesservice.repository.GroupClassRepository;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -16,13 +17,17 @@ public class GroupClassResource {
 
 
     @POST
-    @Produces(MediaType.TEXT_PLAIN)
-    public Uni<Void> createGroupClass(@QueryParam("name") String name,
-                                      @QueryParam("description") String description,
-                                      @QueryParam("instructor") String instructor,
-                                      @QueryParam("capacity") int capacity,
-                                      @QueryParam("attendees") List<String> attendees) {
-        return groupClassRepository.addGroupClass(name, description, instructor, capacity, attendees).replaceWithVoid();
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Response> createGroupClass(GroupClass groupClass) {
+        String name = groupClass.getName();
+        String description = groupClass.getDescription();
+        String instructor = groupClass.getInstructor();
+        int capacity = groupClass.getCapacity();
+        List<String> attendees = groupClass.getAttendees();
+
+        return groupClassRepository.addGroupClass(name, description, instructor, capacity, attendees)
+                .map(response -> Response.status(Response.Status.CREATED).entity(response).build());
     }
 
     @GET
@@ -40,14 +45,17 @@ public class GroupClassResource {
 
     @PUT
     @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Uni<Void> updateGroupClass(@PathParam("id") String id,
-                                      @QueryParam("name") String name,
-                                      @QueryParam("description") String description,
-                                      @QueryParam("instructor") String instructor,
-                                      @QueryParam("capacity") int capacity,
-                                      @QueryParam("attendees") List<String> attendees) {
-        return groupClassRepository.updateGroupClass(id, name, description, instructor, capacity, attendees);
+    public Uni<Response> updateGroupClass(@PathParam("id") String id, GroupClass groupClass) {
+        String name = groupClass.getName();
+        String description = groupClass.getDescription();
+        String instructor = groupClass.getInstructor();
+        int capacity = groupClass.getCapacity();
+        List<String> attendees = groupClass.getAttendees();
+
+        return groupClassRepository.updateGroupClass(id, name, description, instructor, capacity, attendees)
+                .map(response -> Response.status(Response.Status.OK).entity("Group class with ID " + id + " updated").build());
     }
 
     @DELETE

@@ -5,6 +5,7 @@ import io.restassured.RestAssured;
 import org.bson.types.ObjectId;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,11 +38,22 @@ public class GroupClassResourceTest {
                 .when()
                 .post("/groupclass")
                 .then()
-                .statusCode(Matchers.either(CoreMatchers.is(200)).or(CoreMatchers.is(204)))
+                .statusCode(Matchers.either(CoreMatchers.is(201)).or(CoreMatchers.is(204)))
                 .extract()
                 .asString();
 
         createdGroupId = groupClassJson.getString("id");
+    }
+
+    @AfterEach
+    void deleteGroupClass() {
+        if (createdGroupId != null) {
+            RestAssured.given()
+                    .when()
+                    .delete("/groupclass/{id}", createdGroupId)
+                    .then()
+                    .statusCode(204);
+        }
     }
 
     @Test
@@ -60,7 +72,7 @@ public class GroupClassResourceTest {
                 .when()
                 .post("/groupclass")
                 .then()
-                .statusCode(204)
+                .statusCode(201)
                 .contentType("");
 
     }
@@ -92,7 +104,7 @@ public class GroupClassResourceTest {
                 .when()
                 .put("/groupclass/{id}", createdGroupId)
                 .then()
-                .statusCode(204);
+                .statusCode(200);
     }
 
     @Test

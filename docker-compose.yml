@@ -34,6 +34,7 @@ services:
       - artemis
     environment:
       MONGO_DB_URI_GCS: ${MONGO_DB_URI_GCS}
+      MONGO_DB_URI_GCS_TEST: ${MONGO_DB_URI_GCS_TEST}
       MONGO_DB_DATABASE_GCS: ${MONGO_DB_DATABASE_GCS}
       QUARKUS_ARTEMIS_URL: tcp://artemis:61616
     networks:
