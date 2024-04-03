@@ -1,4 +1,4 @@
-name: Run Tests (Group Classes Service)
+name: Run Tests, Build and Publish Docker Image (Group Classes Service)
 
 on:
   push:
@@ -6,13 +6,17 @@ on:
       - master  
 
 jobs:
-  build:
+  build_and_publish:
     runs-on: ubuntu-latest
 
     env:
       QUARKUS_ARTEMIS_URL: tcp://localhost:61616
       MONGO_DB_URI_GCS: ${{ secrets.MONGO_DB_URI_GCS }}
       MONGO_DB_DATABASE_GCS: ${{ secrets.MONGO_DB_DATABASE_GCS }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      IMAGE_NAME: emilijadn/ita-group-classes-service-image
+      TAG: 1.0.0
 
     steps:
     - name: Checkout repository
@@ -36,3 +40,21 @@ jobs:
     - name: Build and test with Maven
       working-directory: ./group-classes-service
       run: mvn -B clean install
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Log in to Docker Hub
+      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Build and push Docker image
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: ./group-classes-service
+        file: ./group-classes-service/src/main/docker/Dockerfile.jvm  
+        push: true
+        tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
