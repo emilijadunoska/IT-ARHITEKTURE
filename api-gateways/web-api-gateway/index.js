@@ -15,6 +15,7 @@ const {
   GetMembershipRequest,
   UpdateMembershipRequest,
   DeleteMembershipRequest,
+  GetMembershipByUserIdRequest,
 } = require("./generated/proto/membership_pb");
 
 const client = new MembershipServiceClient(
@@ -51,6 +52,23 @@ app.get("/getMembership", (req, res) => {
   requestData.setId(id);
 
   client.getMembership(requestData, (error, response) => {
+    if (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      console.log("Received response:", response);
+      res.json(response);
+    }
+  });
+});
+
+app.get("/getMembershipByUserId", (req, res) => {
+  const { userId } = req.query;
+
+  const requestData = new GetMembershipByUserIdRequest();
+  requestData.setUserid(userId);
+
+  client.getMembershipByUserId(requestData, (error, response) => {
     if (error) {
       console.error("Error:", error);
       res.status(500).json({ error: "Internal Server Error" });

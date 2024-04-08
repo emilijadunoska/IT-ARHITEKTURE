@@ -45,7 +45,6 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
         logger.info("Sending createMembership response: {}", response);
     }
 
-
     @Override
     public void getMembership(Membership.GetMembershipRequest request, StreamObserver<Membership.MembershipResponse> responseObserver) {
         logger.info("Received getMembership request for ID: {}", request.getId());
@@ -73,7 +72,6 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
             responseObserver.onError(Status.NOT_FOUND.asRuntimeException());
         }
     }
-
 
     @Override
     public void deleteMembership(Membership.DeleteMembershipRequest request, StreamObserver<Membership.DeleteMembershipResponse> responseObserver) {
@@ -144,7 +142,31 @@ public class MembershipService extends MembershipServiceGrpc.MembershipServiceIm
         }
     }
 
+    @Override
+    public void getMembershipByUserId(Membership.GetMembershipByUserIdRequest request, StreamObserver<Membership.MembershipResponse> responseObserver) {
+        logger.info("Received getMembershipByUserId request for User ID: {}", request.getUserId());
 
+        String userId = request.getUserId();
 
+        ita.membershipservice.model.Membership membership = membershipRepository.findByUserId(userId);
+
+        if (membership != null) {
+            Membership.MembershipResponse response = Membership.MembershipResponse.newBuilder()
+                    .setId(membership.getId().toHexString())
+                    .setUserId(membership.getUserId())
+                    .setType(membership.getType())
+                    .setPrice(membership.getPrice())
+                    .setStartDate(membership.getStartDate())
+                    .setEndDate(membership.getEndDate())
+                    .build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+            logger.info("Sending getMembershipByUserId response: {}", response);
+        } else {
+            System.out.println("Membership for user with ID " + userId + " not found");
+            logger.warn("Membership for user with ID {} not found", userId);
+            responseObserver.onError(Status.NOT_FOUND.asRuntimeException());
+        }
+    }
 
 }

@@ -7,6 +7,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MembershipRepository implements PanacheMongoRepository<Membership> {
 
-
+    public Membership findByUserId(String userId) {
+        return find("userId", userId).firstResult();
+    }
 
 }

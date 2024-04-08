@@ -10,6 +10,8 @@ service MembershipService {
 
   rpc updateMembership (UpdateMembershipRequest) returns (MembershipResponse) {}
 
+  rpc getMembershipByUserId (GetMembershipByUserIdRequest) returns (MembershipResponse) {}
+
 }
 
 message CreateMembershipRequest {
@@ -48,5 +50,8 @@ message UpdateMembershipRequest {
   optional int32 price = 4;
   optional string startDate = 5;
   optional string endDate = 6;
+}
+message GetMembershipByUserIdRequest {
+  string userId = 1;
 }
 

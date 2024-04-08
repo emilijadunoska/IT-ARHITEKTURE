@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 package ita.membershipservice;
 
 service MembershipService {
@@ -10,6 +9,8 @@ service MembershipService {
   rpc deleteMembership (DeleteMembershipRequest) returns (DeleteMembershipResponse) {}
 
   rpc updateMembership (UpdateMembershipRequest) returns (MembershipResponse) {}
+
+  rpc getMembershipByUserId (GetMembershipByUserIdRequest) returns (MembershipResponse) {}
 
 }
 
@@ -49,5 +50,8 @@ message UpdateMembershipRequest {
   optional int32 price = 4;
   optional string startDate = 5;
   optional string endDate = 6;
+}
+message GetMembershipByUserIdRequest {
+  string userId = 1;
 }
 
