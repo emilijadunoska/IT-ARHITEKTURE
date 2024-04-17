@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const ViewMembership = () => {
+const ViewMembershipComponent = () => {
   const [memberships, setMemberships] = useState([]);
   const [user, setUser] = useState("");
 
@@ -147,4 +147,4 @@ const ViewMembership = () => {
   );
 };
 
-export default ViewMembership;
+export default ViewMembershipComponent;

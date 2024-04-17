@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   user-service:
-    image: emilijadn/ita-user-service-image:1.0.0
+    image: emilijadn/ita-user-service:1.0.0
     ports:
       - "8080:8080"
     depends_on:
@@ -14,7 +14,7 @@ services:
       - my-network
 
   membership-service:
-    image: emilijadn/ita-membership-service:2.0.0
+    image: emilijadn/ita-membership-service:1.0.0
     ports:
       - "9000:9000"
     depends_on:
@@ -26,7 +26,7 @@ services:
       - my-network
 
   group-classes-service:
-    image: emilijadn/ita-group-classes-service-image:1.0.0
+    image: emilijadn/ita-group-classes-service:1.0.0
     ports:
       - "8081:8080" # Changed port to avoid conflict with user-service
     depends_on:
@@ -79,35 +79,17 @@ services:
       - membership-service
     networks:
       - my-network
-  
-  # micro-frontend-home:
-  #   image: emilijadn/ita-micro-frontend-home:1.0.0
-  #   ports:
-  #     - "3001:3001"
-  #   networks:
-  #     - my-network
-  
 
-  # micro-frontend-user:
-  #   image: emilijadn/ita-micro-frontend-user:1.0.0
-  #   ports:
-  #     - "3002:3002"
-  #   networks:
-  #     - my-network
-  
-  # micro-frontend-membership:
-  #   image: emilijadn/ita-micro-frontend-membership:1.0.0
-  #   ports:
-  #     - "3003:3003"
-  #   networks:
-  #     - my-network
-
-  # micro-frontend-groupclass:
-  #   image: emilijadn/ita-micro-frontend-groupclass:1.0.0
-  #   ports:
-  #     - "3004:3004"
-  #   networks:
-  #     - my-network
+  health-check:
+    image: emilijadn/ita-health-check-service:1.0.0
+    ports:
+      - "2000:2000"
+    depends_on:
+      - user-service
+      - group-classes-service
+      - membership-service
+    networks:
+      - my-network
     
 networks:
   my-network:

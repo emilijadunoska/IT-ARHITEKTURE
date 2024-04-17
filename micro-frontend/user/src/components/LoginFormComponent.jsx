@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function LoginFormComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // we are using the web gateway to make the request to the user service
     try {
       const response = await fetch(
         `http://localhost:3000/api/user?email=${email}`,
@@ -77,4 +76,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginFormComponent;

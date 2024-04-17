@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, Routes, Route } from "react-router-dom";
 import "./App.css";
-import PurchaseMembership from "./pages/purchaseMembership";
-import ViewMembership from "./pages/viewMembership";
+import PurchaseMembershipComponent from "./components/PurchaseMembershipComponent";
+import ViewMembershipComponent from "./components/ViewMembershipComponent";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -30,8 +30,8 @@ function App() {
       )}
 
       <Routes>
-        <Route path="view" element={<ViewMembership />} />
-        <Route path="purchase" element={<PurchaseMembership />} />
+        <Route path="view" element={<ViewMembershipComponent />} />
+        <Route path="purchase" element={<PurchaseMembershipComponent />} />
       </Routes>
     </div>
   );

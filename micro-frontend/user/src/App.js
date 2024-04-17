@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Link, Routes, Route } from "react-router-dom";
-import Login from "./pages/login";
-import Register from "./pages/Register";
-import Home from "./pages/home";
-import Profile from "./pages/profile";
+import LoginFormComponent from "./components/LoginFormComponent";
+import RegisterFormComponent from "./components/RegisterFormComponent";
+import UserProfileComponent from "./components/UserProfileComponent";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,7 +28,7 @@ function App() {
       <div className="header">
         {isLoggedIn ? (
           <>
-            <Profile userProfile={user} />
+            <UserProfileComponent userProfile={user} />
             <button onClick={handleLogout}>Logout</button>
           </>
         ) : (
@@ -43,9 +42,8 @@ function App() {
         )}
       </div>
       <Routes>
-        <Route index element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
+        <Route path="login" element={<LoginFormComponent />} />
+        <Route path="register" element={<RegisterFormComponent />} />
       </Routes>
     </div>
   );

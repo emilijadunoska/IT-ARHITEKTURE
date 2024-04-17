@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const Profile = ({ userProfile, onUpdateProfile, onDeleteProfile }) => {
+const UserProfileComponent = ({
+  userProfile,
+  onUpdateProfile,
+  onDeleteProfile,
+}) => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     firstName: userProfile.firstName,
@@ -126,4 +130,4 @@ const Profile = ({ userProfile, onUpdateProfile, onDeleteProfile }) => {
   return <div>{editMode ? renderEditMode() : renderViewMode()}</div>;
 };
 
-export default Profile;
+export default UserProfileComponent;

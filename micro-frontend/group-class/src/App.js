@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import GroupClass from "./pages/groupClass";
+import GroupClassesComponent from "./components/GroupClassesComponent";
 
 import "./App.css";
 
@@ -17,14 +17,16 @@ function App() {
     <div className="MembershipApp">
       <div className="centered">
         {isLoggedIn ? (
-          <GroupClass />
+          <GroupClassesComponent />
         ) : (
           <p>You must be logged in to access this page.</p>
         )}
       </div>
 
       <Routes>
-        {isLoggedIn && <Route path="groupClass" element={<GroupClass />} />}
+        {isLoggedIn && (
+          <Route path="groupClass" element={<GroupClassesComponent />} />
+        )}
       </Routes>
     </div>
   );

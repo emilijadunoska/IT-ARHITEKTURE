@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function PurchaseMembership() {
+function PurchaseMembershipComponent() {
   const [existingMembership, setExistingMembership] = useState(null);
   const [purchaseStatus, setPurchaseStatus] = useState(null);
   const [membershipType, setMembershipType] = useState("");
@@ -122,4 +122,4 @@ function PurchaseMembership() {
   );
 }
 
-export default PurchaseMembership;
+export default PurchaseMembershipComponent;
