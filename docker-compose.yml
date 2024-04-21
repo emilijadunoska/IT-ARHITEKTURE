@@ -71,6 +71,8 @@ services:
   
   web-gateway:
     image: emilijadn/ita-web-gateway:2.0.0
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
     ports:
       - "3000:3000"
     depends_on:
@@ -88,6 +90,17 @@ services:
       - user-service
       - group-classes-service
       - membership-service
+    networks:
+      - my-network
+      
+  log-service:
+    image: emilijadn/ita-log-service:1.0.0
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+    ports:
+      - "2001:2001"
+    depends_on:
+      - web-gateway
     networks:
       - my-network
     

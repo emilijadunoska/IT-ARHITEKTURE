@@ -3,9 +3,13 @@ const app = express();
 const grpc = require("@grpc/grpc-js");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const cors = require("cors");
+const connectDB = require("./config/db");
+const Log = require("./models/log");
 
 app.use(express.json());
 app.use(cors());
+
+connectDB();
 
 const {
   MembershipServiceClient,
@@ -22,6 +26,31 @@ const client = new MembershipServiceClient(
   "membership-service:9000",
   grpc.credentials.createInsecure()
 );
+
+// Middleware to log API requests
+app.use(async (req, res, next) => {
+  const excludedEndpoints = ["/"];
+
+  if (excludedEndpoints.includes(req.path)) {
+    return next();
+  }
+
+  const logEntry = {
+    action: req.path,
+    timestamp: new Date(),
+    method: req.method,
+    url: req.originalUrl,
+  };
+
+  try {
+    const log = new Log(logEntry);
+    await log.save();
+    next();
+  } catch (error) {
+    console.error("Error logging request:", error);
+    next(error);
+  }
+});
 
 app.post("/create", (req, res) => {
   const { userid, type, price, startDate, endDate } = req.body;
